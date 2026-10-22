@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10233f">
+  <title>Ramen Ratio Kitchen | Build Your Bowl</title>
+  <style>
+    :root{--navy:#10233f;--navy2:#1c3558;--red:#c63d35;--cream:#f7f5ef;--white:#fff;--ink:#202b3a;--muted:#647184;--line:#e4e7eb;--gold:#d9a94e;--shadow:0 16px 44px rgba(16,35,63,.09)}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
+    button,input,select{font:inherit}
+    .hero{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+    .hero:after{content:"";position:absolute;width:330px;height:330px;border:1px solid rgba(255,255,255,.12);border-radius:50%;right:-70px;top:-155px;box-shadow:0 0 0 28px rgba(255,255,255,.035),0 0 0 58px rgba(255,255,255,.025)}
+    .hero-inner,.wrap{width:min(1080px,calc(100% - 36px));margin:auto}
+    .hero-inner{padding:52px 0 48px;position:relative;z-index:1}
+    .eyebrow{font-size:.76rem;letter-spacing:.17em;text-transform:uppercase;font-weight:800;color:#edb3a9}
+    .hero h1{font-family:Georgia,serif;font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.04;letter-spacing:-.045em;max-width:720px;margin:15px 0}
+    .hero p{max-width:620px;color:#d5deeb;margin:0;font-size:1.05rem}
+    .stamp{display:inline-flex;gap:8px;align-items:center;margin-top:23px;border:1px solid rgba(255,255,255,.23);padding:8px 12px;border-radius:30px;font-size:.78rem;color:#eef2f8}
+    .stamp b{color:#f4c86c}
+    .wrap{padding:34px 0 70px}
+    .panel{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px}
+    .controls{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:18px;align-items:end}
+    .field label{display:block;font-weight:750;color:var(--navy);font-size:.88rem;margin-bottom:8px}
+    .field select,.field input{width:100%;height:48px;padding:0 13px;border:1px solid #d8dee7;border-radius:10px;background:white;color:var(--ink);outline:none}
+    .field select:focus,.field input:focus{border-color:var(--navy2);box-shadow:0 0 0 3px rgba(28,53,88,.12)}
+    .segmented{display:flex;padding:4px;background:#f0f2f5;border-radius:11px;gap:4px;height:48px}
+    .segmented button{border:0;background:transparent;color:var(--muted);padding:0 12px;border-radius:8px;cursor:pointer;font-weight:700;flex:1}
+    .segmented button.active{background:#fff;color:var(--navy);box-shadow:0 1px 5px #10233f1a}
+    .hint{font-size:.76rem;color:var(--muted);margin:7px 0 0}
+    .unitbar{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin:21px 0 14px;color:var(--muted);font-size:.85rem}
+    .unitbar button{border:1px solid var(--line);background:#fff;padding:7px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:700}
+    .unitbar button.active{color:var(--navy);border-color:var(--navy)}
+    .primary{margin-top:21px;background:var(--red);color:white;border:0;border-radius:10px;padding:14px 20px;font-weight:800;cursor:pointer;box-shadow:0 7px 18px rgba(198,61,53,.19);transition:transform .15s,background .15s}
+    .primary:hover{background:#aa302a;transform:translateY(-1px)}
+    .section-title{display:flex;align-items:center;gap:12px;margin:36px 0 16px;scroll-margin-top:18px}
+    .section-title .num{width:34px;height:34px;background:var(--navy);color:white;border-radius:50%;display:grid;place-items:center;font-size:.85rem;font-weight:800}
+    .section-title h2{font-family:Georgia,serif;color:var(--navy);font-size:1.65rem;margin:0}
+    .section-title p{margin:1px 0 0;color:var(--muted);font-size:.88rem}
+    .results{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .metric{border-radius:13px;padding:17px;background:#f6f7f9;border:1px solid #edf0f3;min-height:123px}
+    .metric .label{font-size:.78rem;color:var(--muted);font-weight:700}
+    .metric .value{font-size:1.7rem;line-height:1.2;font-weight:850;color:var(--navy);margin:9px 0 2px;letter-spacing:-.03em}
+    .metric .unit{font-size:.78rem;color:var(--muted)}
+    .ratio-note{border-left:3px solid var(--gold);padding:9px 13px;color:#536071;background:#fbf8ef;border-radius:0 8px 8px 0;margin-top:14px;font-size:.85rem}
+    .recipe-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .recipe-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+    .recipe-card h3{margin:0 0 7px;color:var(--navy);font-size:1.05rem}
+    .recipe-card .sub{font-size:.82rem;color:var(--muted);margin:0 0 12px}
+    .recipe-card ul,.recipe-card ol{padding-left:20px;margin:0}
+    .recipe-card li{padding:3px 0;font-size:.9rem}
+    .recipe-card li::marker{color:var(--red)}
+    .assembly{grid-column:1/-1;background:var(--navy);color:white;border:0}
+    .assembly h3{color:white}
+    .assembly .sub{color:#d2dbea}
+    .assembly ol{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding:0;list-style:none;counter-reset:step}
+    .assembly li{counter-increment:step;padding:13px 12px;border:1px solid #ffffff2d;border-radius:10px;font-size:.84rem}
+    .assembly li:before{content:counter(step,decimal-leading-zero);display:block;color:#f1bd61;font-weight:850;margin-bottom:5px}
+    .tip{margin-top:22px;padding:17px 19px;border-radius:12px;background:#fff2ef;border:1px solid #f1d3cc;color:#56332f;font-size:.9rem}
+    .tip a{color:#a92f29;font-weight:800;text-underline-offset:3px}
+    .footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:30px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:760px){.controls{grid-template-columns:1fr 1fr}.controls .field:first-child{grid-column:1/-1}.results{grid-template-columns:repeat(2,1fr)}.assembly ol{grid-template-columns:1fr 1fr}.recipe-grid{grid-template-columns:1fr}.hero-inner{padding:40px 0 37px}.panel{padding:20px}}
+    @media(max-width:440px){.hero-inner,.wrap{width:min(100% - 24px,1080px)}.controls{grid-template-columns:1fr}.controls .field:first-child{grid-column:auto}.results{gap:8px}.metric{padding:13px;min-height:108px}.metric .value{font-size:1.45rem}.unitbar{justify-content:flex-start;flex-wrap:wrap}.assembly ol{grid-template-columns:1fr}.hero h1{font-size:2.55rem}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Your first bowl starts here</div>
+      <h1>Ramen Ratio<br>Kitchen</h1>
+      <p>A simple calculator and friendly, step-by-step guide for building a balanced bowl of homemade ramen.</p>
+      <div class="stamp"><b>01</b> Choose a style <span>·</span> Set your batch <span>·</span> Start cooking</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="panel" aria-labelledby="setup-heading">
+      <h2 id="setup-heading" class="sr-only">Recipe setup</h2>
+      <div class="controls">
+        <div class="field">
+          <label for="style">Ramen style</label>
+          <select id="style">
+            <option value="shoyu">Shoyu Ramen (Soy Sauce Based)</option>
+            <option value="miso">Miso Ramen (Rich Miso Based)</option>
+            <option value="shio">Shio Ramen (Salt Based)</option>
+            <option value="tonkotsu">Tonkotsu Style (Quick Pork/Chicken Broth)</option>
+            <option value="vegan">Vegan / Vegetarian Ramen</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Batch size</label>
+          <div class="segmented" role="group" aria-label="Batch size mode">
+            <button id="bowls-mode" class="active" type="button">Bowls</button>
+            <button id="volume-mode" type="button">Total broth</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="amount" id="amount-label">Number of bowls</label>
+          <input id="amount" type="number" min="1" max="10" step="1" value="2">
+          <p class="hint" id="amount-hint">Choose 1–10 bowls.</p>
+        </div>
+      </div>
+
+      <div class="unitbar">
+        <span>Display units</span>
+        <button type="button" id="metric-btn" class="active">Metric · ml / g</button>
+        <button type="button" id="us-btn">US customary · fl oz / oz</button>
+      </div>
+      <button class="primary" id="calculate" type="button">Calculate &amp; Show Recipe <span aria-hidden="true">→</span></button>
+    </section>
+
+    <section id="output" aria-live="polite">
+      <div class="section-title">
+        <span class="num">1</span>
+        <div><h2>Your bowl-by-bowl balance</h2><p>Calculated amounts for the batch you selected.</p></div>
+      </div>
+      <div class="results" id="metrics"></div>
+      <div class="ratio-note" id="ratio-note"></div>
+
+      <div class="section-title" id="recipe-heading">
+        <span class="num">2</span>
+        <div><h2>Recipe &amp; instructions</h2><p>Easy methods designed for a first-time ramen cook.</p></div>
+      </div>
+      <div class="recipe-grid" id="recipes"></div>
+
+      <aside class="tip">
+        <strong>Missing an ingredient?</strong> See this
+        <a href="https://japanese-cooking-tool.vercel.app/" target="_blank" rel="noopener noreferrer">Japanese cooking substitution guide</a>
+        for practical alternatives.
+      </aside>
+    </section>
+
+    <div class="footer">A flexible starting point: taste your broth and tare, then adjust to your preference.</div>
+  </main>
+
+  <script>
+    const styles = {
+      shoyu: {
+        broth:300,tare:30,oil:10,noodles:130,
+        ratio:"A clear, savory bowl: start with 300 ml broth, 30 ml shoyu tare, and 10 ml aroma oil per bowl.",
+        tareTitle:"Easy Shoyu Tare",tareSub:"A quick soy-based seasoning sauce.",
+        tareItems:["2 tbsp (30 ml) soy sauce","1 tsp mirin","1 tsp sake or water","Small piece of kombu (optional)"],
+        tareSteps:["Warm everything gently for 2 minutes; do not boil.","Cool and remove the kombu. Keep refrigerated for up to 5 days."],
+        brothTitle:"Quick Chicken Broth",brothSub:"A light, reliable broth from pantry-friendly ingredients.",
+        brothItems:["1.2 L low-sodium chicken stock","1 sliced garlic clove","3 thin slices of ginger","2 scallions, roughly cut"],
+        brothSteps:["Add stock, garlic, ginger, and scallions to a pot.","Simmer gently for 20 minutes, then strain. Add water if needed."],
+        oilTitle:"Scallion Aroma Oil",oilSub:"A fragrant finishing oil for each bowl.",
+        oilItems:["2 tbsp neutral oil","2 tbsp chopped scallion","Small pinch of sesame seeds (optional)"],
+        oilSteps:["Warm oil over low heat; add scallion and cook until fragrant.","Let cool slightly and strain or spoon over the bowl."]
+      },
+      miso: {
+        broth:300,tare:35,oil:12,noodles:140,
+        ratio:"Miso is bold and rich: begin with 300 ml broth, 35 ml miso tare, and 12 ml aroma oil per bowl.",
+        tareTitle:"Easy Miso Tare",tareSub:"A savory paste that dissolves smoothly into hot broth.",
+        tareItems:["2 tbsp white or red miso","1 tsp soy sauce","1 tsp mirin","1 tsp sesame oil","1 tsp warm water"],
+        tareSteps:["Whisk ingredients into a smooth paste.","Keep chilled; stir well before measuring. Do not boil miso in the pot."],
+        brothTitle:"Quick Ginger Chicken Broth",brothSub:"A warming base that pairs well with miso.",
+        brothItems:["1.2 L chicken or vegetable stock","1 sliced garlic clove","4 thin slices of ginger","1 tsp toasted sesame seeds"],
+        brothSteps:["Combine stock, garlic, and ginger in a pot.","Simmer for 20 minutes and strain. Keep hot for serving."],
+        oilTitle:"Garlic Sesame Oil",oilSub:"A savory, aromatic oil for a richer bowl.",
+        oilItems:["2 tbsp neutral oil","1 small garlic clove, thinly sliced","1 tsp toasted sesame oil"],
+        oilSteps:["Warm neutral oil over low heat and gently toast garlic until pale gold.","Turn off heat, stir in sesame oil, and let cool."]
+      },
+      shio: {
+        broth:300,tare:25,oil:10,noodles:130,
+        ratio:"Shio means salt: the seasoning is concentrated, so start with 300 ml broth, 25 ml shio tare, and 10 ml oil per bowl.",
+        tareTitle:"Easy Shio Tare",tareSub:"A bright, light seasoning for a clear broth.",
+        tareItems:["1 tbsp (15 ml) water","1 tsp fine sea salt","1 tsp soy sauce","1 tsp mirin","1 tsp lemon juice"],
+        tareSteps:["Stir until the salt dissolves completely.","Taste a little: it should be salty and bright because it will season a full bowl of broth."],
+        brothTitle:"Quick Clear Chicken Broth",brothSub:"Keep the flavor clean and gentle.",
+        brothItems:["1.2 L low-sodium chicken stock","3 slices of ginger","2 scallions","1 tsp dried shiitake powder (optional)"],
+        brothSteps:["Combine ingredients in a pot and bring just to a simmer.","Cook gently for 20 minutes; strain and keep hot."],
+        oilTitle:"Ginger Scallion Oil",oilSub:"A light aromatic oil that complements the clear broth.",
+        oilItems:["2 tbsp neutral oil","1 tbsp finely chopped scallion","1 tsp finely chopped ginger"],
+        oilSteps:["Warm oil over low heat. Add scallion and ginger.","Cook for 2–3 minutes until fragrant, then cool."]
+      },
+      tonkotsu: {
+        broth:300,tare:30,oil:12,noodles:140,
+        ratio:"This quick pork/chicken version is a rich-style shortcut, not a long-simmered bone broth. Use 300 ml broth, 30 ml tare, and 12 ml oil per bowl.",
+        tareTitle:"Easy Pork-Style Tare",tareSub:"A punchy seasoning to balance a creamy shortcut broth.",
+        tareItems:["2 tbsp soy sauce","1 tsp miso","1 tsp mirin","1 tsp warm water"],
+        tareSteps:["Whisk until the miso dissolves.","Keep chilled and measure into each serving bowl."],
+        brothTitle:"Quick Creamy Pork / Chicken Broth",brothSub:"A weeknight shortcut with a creamy texture.",
+        brothItems:["900 ml chicken stock","300 ml unsweetened soy milk or whole milk","1 tsp garlic powder","1 tsp onion powder","1 tbsp tahini (optional)"],
+        brothSteps:["Warm stock with garlic and onion powder for 10 minutes.","Lower heat; whisk in milk and tahini. Keep below a boil to prevent splitting."],
+        oilTitle:"Garlic Chili Oil",oilSub:"A punchy finishing oil; leave out the chili for a mild bowl.",
+        oilItems:["2 tbsp neutral oil","1 small garlic clove, minced","½ tsp chili flakes (optional)"],
+        oilSteps:["Warm oil on low heat. Add garlic and chili flakes.","Cook until fragrant, then remove from heat before garlic browns."]
+      },
+      vegan: {
+        broth:300,tare:30,oil:10,noodles:130,
+        ratio:"Build umami without animal products: use 300 ml vegetable broth, 30 ml vegan tare, and 10 ml aroma oil per bowl.",
+        tareTitle:"Easy Vegan Umami Tare",tareSub:"Check labels to keep every ingredient plant-based.",
+        tareItems:["2 tbsp soy sauce or tamari","1 tsp white miso","1 tsp mirin (check label)","1 tsp warm water","½ tsp mushroom powder (optional)"],
+        tareSteps:["Whisk ingredients until smooth.","Taste and adjust with a splash of soy sauce or water."],
+        brothTitle:"Quick Mushroom Vegetable Broth",brothSub:"Mushroom and kombu bring a deep savory flavor.",
+        brothItems:["1.2 L vegetable stock","3 dried shiitake mushrooms","1 kombu strip (about 5 cm)","1 sliced carrot","2 scallions"],
+        brothSteps:["Add everything to a pot and bring to a gentle simmer.","Simmer 25 minutes. Remove kombu before it boils; strain the broth."],
+        oilTitle:"Scallion Sesame Oil",oilSub:"A plant-based aromatic oil to finish the bowl.",
+        oilItems:["2 tbsp neutral oil","2 tbsp sliced scallion","1 tsp toasted sesame oil"],
+        oilSteps:["Warm neutral oil over low heat and cook scallion until fragrant.","Turn off heat and stir in sesame oil. Use a plant-based neutral oil."]
+      }
+    };
+
+    let mode = "bowls";
+    let units = "metric";
+    const $ = id => document.getElementById(id);
+
+    function setMode(next) {
+      mode = next;
+      $("bowls-mode").classList.toggle("active", mode === "bowls");
+      $("volume-mode").classList.toggle("active", mode === "volume");
+      $("amount-label").textContent = mode === "bowls" ? "Number of bowls" : "Total broth";
+      $("amount").min = mode === "bowls" ? "1" : "300";
+      $("amount").max = mode === "bowls" ? "10" : "10000";
+      $("amount").step = mode === "bowls" ? "1" : "50";
+      $("amount").value = mode === "bowls" ? "2" : "600";
+      $("amount-hint").textContent = mode === "bowls"
+        ? "Choose 1–10 bowls."
+        : "Enter the broth volume in milliliters; recipes scale to that volume.";
+      calculate();
+    }
+
+    function fmt(value,digits=0) {
+      return Number(value.toFixed(digits)).toLocaleString("en-US");
+    }
+
+    function measureMl(ml) {
+      return units === "metric" ? `${fmt(ml)} ml` : `${fmt(ml / 29.5735,1)} fl oz`;
+    }
+
+    function measureG(g) {
+      return units === "metric" ? `${fmt(g)} g` : `${fmt(g / 28.3495,1)} oz`;
+    }
+
+    function card(title,sub,items,steps) {
+      return `<article class="recipe-card">
+        <h3>${title}</h3>
+        <p class="sub">${sub}</p>
+        <strong>Ingredients</strong>
+        <ul>${items.map(item => `<li>${item}</li>`).join("")}</ul>
+        <p><strong>Method</strong></p>
+        <ol>${steps.map(step => `<li>${step}</li>`).join("")}</ol>
+      </article>`;
+    }
+
+    function calculate() {
+      const recipe = styles[$("style").value];
+      let amount = Number($("amount").value);
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        amount = mode === "bowls" ? 1 : 300;
+      }
+
+      amount = mode === "bowls"
+        ? Math.min(10,Math.max(1,Math.round(amount)))
+        : Math.max(300,amount);
+
+      $("amount").value = amount;
+
+      const servings = mode === "bowls" ? amount : amount / recipe.broth;
+      const broth = mode === "bowls" ? recipe.broth * amount : amount;
+      const tare = recipe.tare * servings;
+      const oil = recipe.oil * servings;
+      const noodles = recipe.noodles * servings;
+
+      const metrics = [
+        ["Broth / Soup Base",measureMl(broth)],
+        ["Tare / Seasoning Sauce",measureMl(tare)],
+        ["Aroma Oil",units === "metric" ? `${fmt(oil)} ml` : `${fmt(oil / 4.92892,1)} tsp`],
+        ["Recommended Noodles",measureG(noodles)]
+      ];
+
+      $("metrics").innerHTML = metrics.map(([label,value]) => {
+        const parts = value.split(" ");
+        return `<div class="metric">
+          <div class="label">${label}</div>
+          <div class="value">${parts[0]}</div>
+          <div class="unit">${parts.slice(1).join(" ")}${label === "Aroma Oil" && units === "us" ? " (approx.)" : ""}</div>
+        </div>`;
+      }).join("");
+
+      $("ratio-note").textContent =
+        `${recipe.ratio} This batch serves about ${fmt(servings,1)} bowl${Math.abs(servings - 1) < 0.05 ? "" : "s"}. Adjust tare gradually to taste.`;
+
+      $("recipes").innerHTML =
+        card(recipe.tareTitle,recipe.tareSub,recipe.tareItems,recipe.tareSteps) +
+        card(recipe.brothTitle,recipe.brothSub,recipe.brothItems,recipe.brothSteps) +
+        card(recipe.oilTitle,recipe.oilSub,recipe.oilItems,recipe.oilSteps) +
+        `<article class="recipe-card assembly">
+          <h3>Assembly Steps</h3>
+          <p class="sub">Prepare toppings before you cook the noodles.</p>
+          <ol>
+            <li>Add measured tare to a warmed ramen bowl.</li>
+            <li>Add aroma oil, then pour in hot broth and stir.</li>
+            <li>Cook noodles according to the package; drain well.</li>
+            <li>Place noodles into the seasoned broth.</li>
+            <li>Add toppings such as scallions, egg, nori, corn, or mushrooms. Serve hot.</li>
+          </ol>
+        </article>`;
+    }
+
+    function showRecipe() {
+      calculate();
+      $("recipe-heading").scrollIntoView({behavior:"smooth",block:"start"});
+    }
+
+    $("bowls-mode").addEventListener("click",() => setMode("bowls"));
+    $("volume-mode").addEventListener("click",() => setMode("volume"));
+    $("calculate").addEventListener("click",showRecipe);
+    $("style").addEventListener("change",showRecipe);
+    $("amount").addEventListener("input",calculate);
+
+    $("metric-btn").addEventListener("click",() => {
+      units = "metric";
+      $("metric-btn").classList.add("active");
+      $("us-btn").classList.remove("active");
+      calculate();
+    });
+
+    $("us-btn").addEventListener("click",() => {
+      units = "us";
+      $("us-btn").classList.add("active");
+      $("metric-btn").classList.remove("active");
+      calculate();
+    });
+
+    calculate();
+  </script>
+</body>
+</html>
